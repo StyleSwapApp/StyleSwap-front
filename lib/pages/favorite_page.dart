@@ -98,6 +98,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           MaterialPageRoute(
                             builder: (context) => DetailArticlePage(
                               product: product, // Passage des données de l'article
+                              isInCart: false,
                             ),
                           ),
                         );
