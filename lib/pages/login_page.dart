@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:styleswap/pages/main_page.dart';
 import 'package:styleswap/pages/sign_in_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+
 
 /// Page de connexion
 class LoginPage extends StatefulWidget {
@@ -14,20 +20,73 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
+  final _storage = const FlutterSecureStorage(); // Instance de FlutterSecureStorage
 
   // Méthode pour simuler la connexion
-  void _login() {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       // Vous pouvez ajouter la logique de connexion ici
+      // URL de ton API de connexion
+    final Uri url = Uri.parse('http://localhost:8080/api/v1/login/login'); // Remplace avec l'URL de ton API
 
-      // Rediriger vers la page d'accueil après la connexion réussie
+    // Création du body de la requête
+    final Map<String, dynamic> body = {
+      'useremail': _email,
+      'userpw': _password,
+    };
+
+    try {
+      // Envoi de la requête POST
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body), // Convertir le body en JSON
+      );
+
+      if (response.statusCode == 200) {
+        // Si la connexion réussit, récupérer les données de la réponse
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        final String token = data['token'];
+        print('Connexion réussie, Token stocké');
+
+        // Exemple : Récupérer le token si l'API en renvoie un
+        await _storage.write(key: 'auth_token', value: token);
+
+        // Rediriger vers la page d'accueil après la connexion réussie
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => MainPage()),
         (Route<dynamic> route) => false, 
       );
+
+      } else if (response.statusCode == 401) {
+        // Afficher un message d'erreur si les identifiants sont incorrects
+        print('Identifiants incorrects');
+        // Retourner à la page de connexion
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false, // Supprimer toutes les autres pages de la pile
+        );
+      } else {
+        // Afficher un message d'erreur pour d'autres codes d'erreur
+        print('Erreur de connexion : ${response.statusCode}');
+        // Retourner à la page de connexion
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false, // Supprimer toutes les autres pages de la pile
+        );
+      }
+    } catch (e) {
+      // Si une erreur réseau se produit, afficher un message d'erreur
+      print('Erreur de connexion : $e');
+    }
     }
   }
 
