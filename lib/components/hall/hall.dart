@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:styleswap/components/hall/article_card.dart';
 import 'package:styleswap/services/article_service.dart';
+import 'package:styleswap/pages/detail_article_page.dart'; // Import de la page de détail
 
 class Hall extends StatefulWidget {
   const Hall({super.key});
@@ -12,11 +13,11 @@ class Hall extends StatefulWidget {
 class _HallState extends State<Hall> {
   // Variables pour la pagination
   int currentPage = 1;
-  int itemsPerPage = 10;
+  final int itemsPerPage = 10;
 
   // Instance du service
   final ArticleService articleService = ArticleService();
-  List<Map<String, String>> products = [];
+  List<Map<String, dynamic>> products = [];
 
   int totalPages = 0;
 
@@ -30,7 +31,7 @@ class _HallState extends State<Hall> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> paginatedProducts = products
+    List<Map<String, dynamic>> paginatedProducts = products
         .skip((currentPage - 1) * itemsPerPage)
         .take(itemsPerPage)
         .toList();
@@ -40,24 +41,37 @@ class _HallState extends State<Hall> {
         child: Column(
           children: [
             GridView.builder(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 2.0,
                 mainAxisSpacing: 10.0,
-                childAspectRatio: 0.65,
+                childAspectRatio: 0.6,
               ),
               itemCount: paginatedProducts.length,
               itemBuilder: (context, index) {
-                Map<String, String> product = paginatedProducts[index];
-                return ArticleCard(
-                  imageUrl: product['image'] ?? '',
-                  title: product['title'] ?? '',
-                  size: product['size'] ?? '',
-                  condition: product['condition'] ?? '',
-                  price: product['price'] ?? '',
+                Map<String, dynamic> product = paginatedProducts[index];
+                return GestureDetector(
+                  onTap: () {
+                    // Transmettre toutes les informations de l'article
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailArticlePage(
+                          product: product, // Passer l'article complet
+                        ),
+                      ),
+                    );
+                  },
+                  child: ArticleCard(
+                    imageUrl: (product['images'] as List<String>?)?.first ?? '',
+                    title: product['title'] ?? '',
+                    size: product['size'] ?? '',
+                    condition: product['condition'] ?? '',
+                    price: product['price'] ?? '',
+                  ),
                 );
               },
             ),
@@ -76,8 +90,8 @@ class _HallState extends State<Hall> {
                       },
                       child: Container(
                         width: 25,
-                        margin: EdgeInsets.symmetric(horizontal: 4.0),
-                        padding: EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           color: currentPage == pageNumber ? Colors.indigoAccent : Colors.grey[300],
                           borderRadius: BorderRadius.circular(10.0),

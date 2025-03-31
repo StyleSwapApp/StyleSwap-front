@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:styleswap/components/favorite/favorite_widget.dart';
 
 class ArticleCard extends StatelessWidget {
   final String imageUrl;
@@ -37,35 +38,41 @@ class ArticleCard extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            // Contenu de l'article avec un SingleChildScrollView pour éviter l'overflow
-            Flexible( // Utilisation de Flexible pour s'adapter à l'espace restant
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15, // Taille du titre
-                        color: Colors.black87,
+            // Contenu de l'article
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15, // Taille du titre
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Text(
+                    '$size - $condition',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Le prix à gauche
+                      Text(
+                        price,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18, // Taille du prix
+                          color: Colors.indigoAccent,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '$size - $condition',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text(
-                      price,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18, // Taille du prix
-                        color: Colors.indigoAccent,
-                      ),
-                    ),
-                  ],
-                ),
+                      // Le cœur à droite
+                      FavoriteIconButton(initialFavoriteState: false), // Cœur non favori par défaut
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

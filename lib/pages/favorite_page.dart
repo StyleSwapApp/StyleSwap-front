@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:styleswap/components/favorite/favorite_article_card.dart';
+import 'package:styleswap/components/favorite/favorite_widget.dart';
+import 'package:styleswap/pages/detail_article_page.dart'; // Importez la page de détails
 import '../services/favorite_service.dart';
 import '../components/titlebar/titlebar.dart';
 
@@ -13,10 +15,11 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   FavoriteService favoriteService = FavoriteService();
-  List<Map<String, String>> favorites = [];
+  List<Map<String, dynamic>> favorites = [];
   int currentPage = 1;
   int itemsPerPage = 5;
   int totalPages = 0;
+  final ScrollController _scrollController = ScrollController(); // Ajout du ScrollController
 
   @override
   void initState() {
@@ -31,9 +34,18 @@ class _FavoritePageState extends State<FavoritePage> {
     });
   }
 
+  // Méthode pour gérer le changement de page et réinitialiser la position du scroll
+  void goToPage(int pageNumber) {
+    setState(() {
+      currentPage = pageNumber;
+    });
+    // Réinitialise le scroll en haut de la page
+    _scrollController.jumpTo(0); 
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> paginatedFavorites = favorites
+    List<Map<String, dynamic>> paginatedFavorites = favorites
         .skip((currentPage - 1) * itemsPerPage)
         .take(itemsPerPage)
         .toList();
@@ -41,8 +53,8 @@ class _FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(
-          'StyleSwap', 
+        title: const Text(
+          'StyleSwap',
           style: TextStyle(
             color: Colors.indigo,
             fontWeight: FontWeight.bold,
@@ -53,10 +65,11 @@ class _FavoritePageState extends State<FavoritePage> {
         ],
       ),
       body: SingleChildScrollView(
+        controller: _scrollController, // Utilisation du ScrollController
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 15.0),
               child: Text(
                 "Mes articles favoris :",
                 style: TextStyle(
@@ -70,18 +83,41 @@ class _FavoritePageState extends State<FavoritePage> {
               child: SizedBox(
                 width: 325,
                 child: ListView.builder(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: paginatedFavorites.length,
                   itemBuilder: (context, index) {
-                    Map<String, String> product = paginatedFavorites[index];
-                    return FavoriteArticleCard(
-                      imageUrl: product['image'] ?? '',
-                      title: product['title'] ?? '',
-                      size: product['size'] ?? '',
-                      condition: product['condition'] ?? '',
-                      price: product['price'] ?? '',
+                    Map<String, dynamic> product = paginatedFavorites[index];
+
+                    return GestureDetector( // Encapsulez chaque carte dans un GestureDetector
+                      onTap: () {
+                        // Lorsqu'on clique sur un article, on navigue vers la page de détails
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailArticlePage(
+                              product: product, // Passage des données de l'article
+                            ),
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          FavoriteArticleCard(
+                            imageUrl: product['images'][0] ?? '', // Prend la première image
+                            title: product['title'] ?? '',
+                            size: product['size'] ?? '',
+                            condition: product['condition'] ?? '',
+                            price: product['price'] ?? '',
+                          ),
+                          Positioned(
+                            top: 8, // Positionner le cœur un peu plus bas
+                            right: 20, // Positionner le cœur un peu plus à gauche
+                            child: FavoriteIconButton(initialFavoriteState: true), // Remplacer par le widget FavoriteIconButton
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -96,14 +132,12 @@ class _FavoritePageState extends State<FavoritePage> {
                     int pageNumber = index + 1;
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          currentPage = pageNumber;
-                        });
+                        goToPage(pageNumber); // Appel de goToPage pour changer de page
                       },
                       child: Container(
                         width: 30,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                        padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           color: currentPage == pageNumber ? Colors.indigoAccent : Colors.grey[300],
                           borderRadius: BorderRadius.circular(10.0),
