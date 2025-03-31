@@ -104,7 +104,7 @@ class _UserPageState extends State<UserPage> {
               ),
               SizedBox(height: 10),
               // Bouton de suppression de compte
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: ElevatedButton(
                   onPressed: () {

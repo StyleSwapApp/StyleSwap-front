@@ -61,6 +61,7 @@ class _HallState extends State<Hall> {
                       MaterialPageRoute(
                         builder: (context) => DetailArticlePage(
                           product: product, // Passer l'article complet
+                          isInCart: false,
                         ),
                       ),
                     );
