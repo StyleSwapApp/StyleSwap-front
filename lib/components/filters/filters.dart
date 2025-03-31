@@ -6,7 +6,7 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-  final List<String> filterOptions = ['Pull', 'Pantalon', 'Nike', 'Adidas', 'Chaussures'];
+  final List<String> filterOptions = ['Pull', 'Pantalon', 'Nike', 'Chaussures', ' + '];
   final Set<String> selectedFilters = {}; // Stocke les filtres sélectionnés
 
   @override

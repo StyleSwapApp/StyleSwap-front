@@ -41,7 +41,7 @@ class _DetailArticlePageState extends State<DetailArticlePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 5.0),
+            SizedBox(height: .0),
 
             // Indicateurs de photo (points) au-dessus du carrousel
             Padding(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:styleswap/pages/home_page.dart';
 import 'package:styleswap/pages/favorite_page.dart';
-import 'package:styleswap/pages/create_ad_page.dart';  // Page pour ajouter une annonce
-import 'package:styleswap/pages/cart_page.dart';     // Page du panier
-import 'package:styleswap/pages/message_page.dart';    // Page des messages
+import 'package:styleswap/pages/create_ad_page.dart';
+import 'package:styleswap/pages/cart_page.dart';
+import 'package:styleswap/pages/message_page.dart'; 
 
 /// Navbar commune aux pages
 class MainPage extends StatefulWidget {
@@ -18,8 +18,8 @@ class _MainPageState extends State<MainPage> {
 
   // Liste des pages correspondantes aux onglets
   final List<Widget> _pages = [
-    HomePage(),
-    FavoritePage(),
+    HomePage(),        // Page d'accueil
+    FavoritePage(),    // Page des articles favoris
     CreateAdPage(),    // Page pour ajouter une annonce
     CartPage(),        // Page du panier
     MessagePage(),     // Page des messages

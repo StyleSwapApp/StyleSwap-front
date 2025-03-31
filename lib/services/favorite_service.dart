@@ -1,6 +1,6 @@
 class FavoriteService {
   List<Map<String, dynamic>> products = [
-    {'images': ['assets/articles/article1.jpeg', 'assets/articles/article12.jpeg'], 'title': 'Pull Nike vert', 'size': 'M', 'condition': 'Neuf', 'price': '50€'},
+    {'images': ['assets/articles/article1.jpeg', 'assets/articles/article12.jpeg', 'assets/articles/article7.jpeg'], 'title': 'Pull Nike vert', 'size': 'M', 'condition': 'Neuf', 'price': '50€'},
     {'images': ['assets/articles/article2.jpeg', 'assets/articles/article5.jpeg'], 'title': 'Jean Levi\'s', 'size': 'L', 'condition': 'Bon état', 'price': '45€'},
     {'images': ['assets/articles/article3.jpeg', 'assets/articles/article7.jpeg'], 'title': 'Chaussures Adidas', 'size': '42', 'condition': 'Neuf', 'price': '75€'},
     {'images': ['assets/articles/article4.jpeg', 'assets/articles/article8.jpeg'], 'title': 'Veste Zara', 'size': 'S', 'condition': 'Très bon état', 'price': '35€'},
