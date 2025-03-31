@@ -23,9 +23,10 @@ class _LoginPageState extends State<LoginPage> {
       // Vous pouvez ajouter la logique de connexion ici
 
       // Rediriger vers la page d'accueil après la connexion réussie
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => MainPage()),
+        (Route<dynamic> route) => false, 
       );
     }
   }
