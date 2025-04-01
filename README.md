@@ -37,6 +37,14 @@ En cliquant sur un article, on accède à plus d'informations et de photos sur c
   <img width="411" alt="image" src="https://github.com/user-attachments/assets/b16bf66b-e275-4539-bd14-84fefd926011" />
 </p>
 
+### Poster une annonce
+Le bouton demande l'autorisation et ouvre la caméra mais étant sur un simulateur, il n'y en a pas de disponible ici
+<p align="center">
+  <img width="329" alt="image" src="https://github.com/user-attachments/assets/715e19d9-93a2-4aff-bfc8-7289767e4f44" />
+  <img width="329" alt="image" src="https://github.com/user-attachments/assets/05f7f60d-3c0f-47d5-a033-9b071cba689f" />
+
+</p>
+
 ### 🛒 Panier
 Sur cette page, la liste des articles favoris s'affiche, et un simple swipe permet de supprimer un article de la liste :
 <p align="center">
