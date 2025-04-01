@@ -25,7 +25,7 @@ class _HallState extends State<Hall> {
   void initState() {
     super.initState();
     // Récupérer les articles depuis le service
-    products = articleService.getAllArticles();
+    // products = articleService.getAllArticles();
     totalPages = (products.length / itemsPerPage).ceil();
   }
 
@@ -61,6 +61,7 @@ class _HallState extends State<Hall> {
                       MaterialPageRoute(
                         builder: (context) => DetailArticlePage(
                           product: product, // Passer l'article complet
+                          isInCart: false,
                         ),
                       ),
                     );

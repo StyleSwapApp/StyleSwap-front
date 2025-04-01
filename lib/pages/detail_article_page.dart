@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class DetailArticlePage extends StatefulWidget {
   final Map<String, dynamic> product;
+  final bool isInCart; // Ajout du paramètre isInCart
 
-  const DetailArticlePage({super.key, required this.product});
+  const DetailArticlePage({super.key, required this.product, required this.isInCart});
 
   @override
   _DetailArticlePageState createState() => _DetailArticlePageState();
@@ -27,6 +28,9 @@ class _DetailArticlePageState extends State<DetailArticlePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Calcul de l'espacement conditionnel en fonction de isInCart
+    double spacing = widget.isInCart ? 30.0 : 10.0;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -41,7 +45,7 @@ class _DetailArticlePageState extends State<DetailArticlePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: .0),
+            SizedBox(height: spacing), // Espacement conditionnel
 
             // Indicateurs de photo (points) au-dessus du carrousel
             Padding(
@@ -64,7 +68,7 @@ class _DetailArticlePageState extends State<DetailArticlePage> {
                 ),
               ),
             ),
-            SizedBox(height: 10.0), // Espace entre les points et le carrousel
+            SizedBox(height: 10), // Espacement conditionnel
 
             // Carrousel d'images avec bords blancs
             SizedBox(
@@ -180,21 +184,23 @@ class _DetailArticlePageState extends State<DetailArticlePage> {
                     ),
                   ),
                   SizedBox(height: 15.0),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                  // Ajouter au panier uniquement si isInCart est false
+                  if (!widget.isInCart) 
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        minimumSize: Size(0.7 * MediaQuery.of(context).size.width, 50),
                       ),
-                      minimumSize: Size(0.7 * MediaQuery.of(context).size.width, 50),
+                      icon: Icon(Icons.shopping_cart, color: Colors.white),
+                      label: Text(
+                        'Ajouter au panier',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                    icon: Icon(Icons.shopping_cart, color: Colors.white),
-                    label: Text(
-                      'Ajouter au panier',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
                 ],
               ),
             ),
