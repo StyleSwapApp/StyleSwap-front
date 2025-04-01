@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_secure_storage: ^9.0.0
   shared_preferences: ^2.5.3
+  geolocator: ^13.0.4
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:
