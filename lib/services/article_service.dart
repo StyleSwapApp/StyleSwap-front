@@ -1,68 +1,26 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:styleswap/services/Token.dart';
-
 class ArticleService {
+  List<Map<String, dynamic>> products = [
+    {'images': ['assets/articles/article1.jpeg', 'assets/articles/article12.jpeg', 'assets/articles/article7.jpeg'], 'title': 'Pull Nike vert', 'size': 'M', 'condition': 'Neuf', 'price': '50€'},
+    {'images': ['assets/articles/article2.jpeg', 'assets/articles/article5.jpeg'], 'title': 'Jean Levi\'s', 'size': 'L', 'condition': 'Bon état', 'price': '45€'},
+    {'images': ['assets/articles/article3.jpeg', 'assets/articles/article7.jpeg'], 'title': 'Chaussures Adidas', 'size': '42', 'condition': 'Neuf', 'price': '75€'},
+    {'images': ['assets/articles/article4.jpeg', 'assets/articles/article8.jpeg'], 'title': 'Veste Zara', 'size': 'S', 'condition': 'Très bon état', 'price': '35€'},
+    {'images': ['assets/articles/article5.jpeg', 'assets/articles/article9.jpeg'], 'title': 'Pull Hollister', 'size': 'M', 'condition': 'Neuf', 'price': '55€'},
+    {'images': ['assets/articles/article6.jpeg', 'assets/articles/article10.jpeg'], 'title': 'Jean Diesel', 'size': 'L', 'condition': 'Très bon état', 'price': '60€'},
+    {'images': ['assets/articles/article7.jpeg', 'assets/articles/article11.jpeg'], 'title': 'Chaussures Nike', 'size': '43', 'condition': 'Neuf', 'price': '80€'},
+    {'images': ['assets/articles/article8.jpeg', 'assets/articles/article1.jpeg'], 'title': 'Veste Uniqlo', 'size': 'M', 'condition': 'Bon état', 'price': '40€'},
+    {'images': ['assets/articles/article9.jpeg', 'assets/articles/article3.jpeg'], 'title': 'T-shirt Adidas', 'size': 'M', 'condition': 'Neuf', 'price': '30€'},
+    {'images': ['assets/articles/article10.jpeg', 'assets/articles/article2.jpeg'], 'title': 'Veste Nike', 'size': 'L', 'condition': 'Bon état', 'price': '50€'},
+    {'images': ['assets/articles/article11.jpeg', 'assets/articles/article4.jpeg'], 'title': 'Pantalon Levi\'s', 'size': 'L', 'condition': 'Neuf', 'price': '65€'},
+    {'images': ['assets/articles/article12.jpeg', 'assets/articles/article6.jpeg'], 'title': 'Short Nike', 'size': 'M', 'condition': 'Très bon état', 'price': '25€'},
+  ];
 
-  Future<List<Map<String, dynamic>>> getAllArticles() async {
-    final Uri url = Uri.parse('http://localhost:8080/api/v1/articles');
-    
-    // Récupérer le token utilisateur depuis le stockage sécurisé
-    String? token = await getToken();
-
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        // Décoder la réponse JSON comme une liste d'articles
-        final List<dynamic> data = jsonDecode(response.body);
-        return List<Map<String, dynamic>>.from(data);
-      } else {
-        print('Failed to load articles: ${response.statusCode}');
-        return []; // Retourner une liste vide en cas d'erreur
-      }
-    } catch (e) {
-      print('An error occurred: $e');
-      return []; // Retourner une liste vide en cas d'erreur
-    }
+  /// Retourne la liste de tous les articles 
+  List<Map<String, dynamic>> getAllArticles() {
+    return products;
   }
 
-
   /// Retourne un article en fonction de son ID
-  Future<Map<String, dynamic>?> getOneArticleById(int id) async {
-    final Uri url = Uri.parse('http://localhost:8080/api/v1/articles/$id');
-
-    String? token = await getToken();
-
-    final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-    try {
-      if (response.statusCode == 200) {
-        // Si la connexion réussit, récupérer les données de la réponse
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data;
-      } else {
-        // Gérer les erreurs ici
-        print('Failed to load article: ${response.statusCode}');
-        return null; // Retourner null en cas d'erreur
-      }
-    } catch (e) {
-      // Gérer les erreurs ici
-      print('An error occurred: $e');
-      return null; // Retourner null en cas d'erreur
-    }
+  Map<String, dynamic>? getOneArticleById(int id) {
+    return products.take(1).toList()[0];
   }
 }

@@ -11,11 +11,9 @@ class Hall extends StatefulWidget {
 }
 
 class _HallState extends State<Hall> {
-  // Variables pour la pagination
   int currentPage = 1;
   final int itemsPerPage = 10;
 
-  // Instance du service
   final ArticleService articleService = ArticleService();
   List<Map<String, dynamic>> products = [];
 
@@ -25,7 +23,7 @@ class _HallState extends State<Hall> {
   void initState() {
     super.initState();
     // Récupérer les articles depuis le service
-    // products = articleService.getAllArticles();
+    products = articleService.getAllArticles();
     totalPages = (products.length / itemsPerPage).ceil();
   }
 
@@ -36,82 +34,124 @@ class _HallState extends State<Hall> {
         .take(itemsPerPage)
         .toList();
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GridView.builder(
-              padding: const EdgeInsets.all(8.0),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 2.0,
-                mainAxisSpacing: 10.0,
-                childAspectRatio: 0.6,
-              ),
-              itemCount: paginatedProducts.length,
-              itemBuilder: (context, index) {
-                Map<String, dynamic> product = paginatedProducts[index];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isLandscape = constraints.maxWidth > constraints.maxHeight;
+
+        if (isLandscape) {
+          // En mode paysage : carrousel horizontal
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: products.map((product) {
                 return GestureDetector(
                   onTap: () {
-                    // Transmettre toutes les informations de l'article
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailArticlePage(
-                          product: product, // Passer l'article complet
+                          product: product,
                           isInCart: false,
                         ),
                       ),
                     );
                   },
-                  child: ArticleCard(
-                    imageUrl: (product['images'] as List<String>?)?.first ?? '',
-                    title: product['title'] ?? '',
-                    size: product['size'] ?? '',
-                    condition: product['condition'] ?? '',
-                    price: product['price'] ?? '',
+                  child: Container(
+                    width: 200.0, // Taille explicite pour chaque article
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ArticleCard(
+                      imageUrl: (product['images'] as List<String>?)?.first ?? '',
+                      title: product['title'] ?? '',
+                      size: product['size'] ?? '',
+                      condition: product['condition'] ?? '',
+                      price: product['price'] ?? '',
+                    ),
                   ),
                 );
-              },
+              }).toList(),
             ),
-            if (totalPages > 1)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(totalPages, (index) {
-                    int pageNumber = index + 1;
+          );
+        } else {
+          // En mode portrait : grille avec pagination
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                GridView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 2.0,
+                    mainAxisSpacing: 10.0,
+                    childAspectRatio: 0.6,
+                  ),
+                  itemCount: paginatedProducts.length,
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> product = paginatedProducts[index];
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          currentPage = pageNumber;
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailArticlePage(
+                              product: product,
+                              isInCart: false,
+                            ),
+                          ),
+                        );
                       },
                       child: Container(
-                        width: 25,
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: currentPage == pageNumber ? Colors.indigoAccent : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Text(
-                          pageNumber.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: currentPage == pageNumber ? Colors.white : Colors.black,
-                          ),
+                        width: 180.0, // Taille explicite pour chaque article
+                        child: ArticleCard(
+                          imageUrl: (product['images'] as List<String>?)?.first ?? '',
+                          title: product['title'] ?? '',
+                          size: product['size'] ?? '',
+                          condition: product['condition'] ?? '',
+                          price: product['price'] ?? '',
                         ),
                       ),
                     );
-                  }),
+                  },
                 ),
-              ),
-          ],
-        ),
-      ),
+                if (totalPages > 1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(totalPages, (index) {
+                        int pageNumber = index + 1;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              currentPage = pageNumber;
+                            });
+                          },
+                          child: Container(
+                            width: 25,
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              color: currentPage == pageNumber ? Colors.indigoAccent : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Text(
+                              pageNumber.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: currentPage == pageNumber ? Colors.white : Colors.black,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }
