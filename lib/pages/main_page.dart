@@ -16,13 +16,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  // Liste des pages correspondantes aux onglets
   final List<Widget> _pages = [
-    HomePage(),        // Page d'accueil
-    FavoritePage(),    // Page des articles favoris
-    CreateAdPage(),    // Page pour ajouter une annonce
-    CartPage(),        // Page du panier
-    MessagePage(),     // Page des messages
+    HomePage(),
+    FavoritePage(),
+    CreateAdPage(),
+    CartPage(),
+    MessagePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -31,38 +30,49 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-/// 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _selectedIndex, // Conserve l'état des pages
+        index: _selectedIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoris'),
-          BottomNavigationBarItem(
-            icon: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.indigoAccent,
-                shape: BoxShape.circle,
+      bottomNavigationBar: LayoutBuilder(
+        builder: (context, constraints) {
+          // Si la largeur est supérieure à la hauteur, c'est du paysage
+          bool isLandscape = constraints.maxWidth > constraints.maxHeight;
+
+          return BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            items: [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
+              BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoris'),
+              BottomNavigationBarItem(
+                icon: Container(
+                  width: 50,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.indigoAccent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.add, color: Colors.white),
+                ),
+                label: '',
               ),
-              child: Icon(Icons.add, color: Colors.white),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Panier'),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
-        ],
-        selectedItemColor: Colors.indigoAccent,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
+              BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Panier'),
+              BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
+            ],
+            selectedItemColor: Colors.indigoAccent,
+            unselectedItemColor: Colors.grey,
+            backgroundColor: Colors.white,
+            // Ajuster la hauteur en fonction de l'orientation
+            type: BottomNavigationBarType.fixed,
+            iconSize: isLandscape ? 20 : 24, // Réduire la taille des icônes en paysage
+            selectedFontSize: isLandscape ? 10 : 12, // Réduire la taille du texte en paysage
+            unselectedFontSize: isLandscape ? 10 : 12, // Réduire la taille du texte en paysage
+          );
+        },
       ),
     );
   }

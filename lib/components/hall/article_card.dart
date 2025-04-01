@@ -18,11 +18,19 @@ class ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Vérifie si l'appareil est en mode paysage
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    // Ajuste la hauteur de l'image et les tailles de texte en fonction de l'orientation
+    double imageHeight = isLandscape ? 140.0 : 200.0; // Image plus petite en paysage
+    double titleFontSize = isLandscape ? 14.0 : 15.0; // Titre plus petit en paysage
+    double priceFontSize = isLandscape ? 16.0 : 18.0; // Prix plus petit en paysage
+
     return Container(
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),  // Coins arrondis
-        color: Colors.white,  // Fond blanc pour les articles
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
@@ -32,7 +40,7 @@ class ArticleCard extends StatelessWidget {
             // Image de l'article
             SizedBox(
               width: double.infinity,
-              height: 200.0, // Ajuste la hauteur de l'image
+              height: imageHeight, // Hauteur dynamique de l'image
               child: Image.asset(
                 imageUrl,
                 fit: BoxFit.cover,
@@ -48,7 +56,7 @@ class ArticleCard extends StatelessWidget {
                     title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15, // Taille du titre
+                      fontSize: titleFontSize, // Taille du titre ajustée
                       color: Colors.black87,
                     ),
                   ),
@@ -64,12 +72,12 @@ class ArticleCard extends StatelessWidget {
                         price,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18, // Taille du prix
+                          fontSize: priceFontSize, // Taille du prix ajustée
                           color: Colors.indigoAccent,
                         ),
                       ),
                       // Le cœur à droite
-                      FavoriteIconButton(initialFavoriteState: false), // Cœur non favori par défaut
+                      FavoriteIconButton(initialFavoriteState: false),
                     ],
                   ),
                 ],

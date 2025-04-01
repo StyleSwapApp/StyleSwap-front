@@ -24,13 +24,28 @@ class HomePage extends StatelessWidget {
           TitleBar(), // Utilisation correcte dans la liste
         ],
       ),
-      body: Column(
-        children: [
-          SearchBarWidget(),
-          Filters(),
-          SizedBox(height: 10),
-          Expanded(child: Hall()),
-        ],
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.portrait) {
+            // Mode portrait
+            return Column(
+              children: [
+                SearchBarWidget(),
+                Filters(),
+                SizedBox(height: 10),
+                Expanded(child: Hall()), // Mode portrait
+              ],
+            );
+          } else {
+            // Mode paysage
+            return Column(
+              children: [
+                SizedBox(height: 10),
+                Expanded(child: Hall()), // Mode paysage
+              ],
+            );
+          }
+        },
       ),
     );
   }
