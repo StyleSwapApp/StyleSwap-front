@@ -40,6 +40,7 @@ packages:
       sha256: "2f5709ae4d3d59dd8f7cd309b4e023046b57d8a6c82130785d2b0e5868084e76"
       url: "https://pub.dev"
     source: hosted
+
     version: "1.19.1"
   cupertino_icons:
     dependency: "direct main"
@@ -255,6 +256,7 @@ packages:
       sha256: "4843174df4d288f5e29185bd6e72a6fbdf5a4a4602717eed565497429f179942"
       url: "https://pub.dev"
     source: hosted
+
     version: "2.4.1"
   path_provider_linux:
     dependency: transitive
@@ -296,6 +298,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+
   shared_preferences:
     dependency: "direct main"
     description:
