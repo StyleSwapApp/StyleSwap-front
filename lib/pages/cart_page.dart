@@ -18,6 +18,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   TextEditingController addressController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;
+  late Future<Map<String, String>> userInfo;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
+    userInfo = UserService().getUserInformations(1); // ID utilisateur fictif
   }
 
   @override
@@ -48,10 +50,7 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final cartService = CartService();
-    final userService = UserService();
     
-    final Future<Map<String, String>> userInfo = userService.getUserInformations(1); // ID utilisateur fictif
-
     List<Map<String, dynamic>> cartItems = cartService.getAllArticlesInCart(1);
     double totalPrice = cartItems.fold(
       0,
@@ -89,123 +88,100 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
                   ),
                 ],
               ),
-            ),
-
-            // Informations utilisateur
-            Text(
-              'Mes informations',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-
-            // Champ Nom
-            FutureBuilder<Map<String, String>>(
-              future: userInfo,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Erreur: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  return TextField(
-                    controller: TextEditingController(text: snapshot.data!['firstName']),
-                    decoration: InputDecoration(labelText: 'Nom'),
-                  );
-                } else {
-                  return Text('Aucune donnée disponible');
-                }
-              },
-            ),
-            SizedBox(height: 10),
-
-            // Champ Prénom
-            FutureBuilder<Map<String, String>>(
-              future: userInfo,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Erreur: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  return TextField(
-                    controller: TextEditingController(text: snapshot.data!['lastName']),
-                    decoration: InputDecoration(labelText: 'Prénom'),
-                  );
-                } else {
-                  return Text('Aucune donnée disponible');
-                }
-              },
-            ),
-            SizedBox(height: 10),
-
-            // Champ Email
-            FutureBuilder<Map<String, String>>(
-              future: userInfo,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Erreur: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  return TextField(
-                    controller: TextEditingController(text: snapshot.data!['email']),
-                    decoration: InputDecoration(labelText: 'Email'),
-                  );
-                } else {
-                  return Text('Aucune donnée disponible');
-                }
-              },
-            ),
-            SizedBox(height: 10),
-
-            // Champ Adresse de livraison
-            Row(
+            )
+          : ListView(
+              padding: EdgeInsets.all(16),
               children: [
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-                    itemCount: cartItems.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailArticlePage(
-                                product: cartItems[index],
-                                isInCart: true,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Dismissible(
-                          key: Key(cartItems[index]['id'].toString()),
-                          onDismissed: (direction) {
-                            cartService.removeArticleFromCart(cartItems[index]['id']);
-                            setState(() {
-                              cartItems.removeAt(index);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Article supprimé du panier")),
-                            );
-                          },
-                          background: Container(
-                            color: Colors.red,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: Icon(Icons.delete, color: Colors.white, size: 30),
-                              ),
+                // Informations utilisateur
+                Text(
+                  'Mes informations',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+
+                // Champs utilisateur (Nom, Prénom, Email)
+                FutureBuilder<Map<String, String>>(
+                  future: userInfo,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Erreur: ${snapshot.error}');
+                    } else if (snapshot.hasData) {
+                      var data = snapshot.data!;
+                      return Column(
+                        children: [
+                          TextField(
+                            controller: TextEditingController(text: data['firstName']),
+                            decoration: InputDecoration(labelText: 'Nom'),
+                          ),
+                          SizedBox(height: 10),
+                          TextField(
+                            controller: TextEditingController(text: data['lastName']),
+                            decoration: InputDecoration(labelText: 'Prénom'),
+                          ),
+                          SizedBox(height: 10),
+                          TextField(
+                            controller: TextEditingController(text: data['email']),
+                            decoration: InputDecoration(labelText: 'Email'),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Text('Aucune donnée disponible');
+                    }
+                  },
+                ),
+                SizedBox(height: 20),
+
+                // Cart Items
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailArticlePage(
+                              product: cartItems[index],
+                              isInCart: true,
                             ),
                           ),
-                          direction: DismissDirection.endToStart,
-                          child: CartArticleCard(cartItem: cartItems[index]),
+                        );
+                      },
+                      child: Dismissible(
+                        key: Key(cartItems[index]['id'].toString()),
+                        onDismissed: (direction) {
+                          cartService.removeArticleFromCart(cartItems[index]['id']);
+                          setState(() {
+                            cartItems.removeAt(index);
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Article supprimé du panier")),
+                          );
+                        },
+                        background: Container(
+                          color: Colors.red,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Icon(Icons.delete, color: Colors.white, size: 30),
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                  ),
+                        direction: DismissDirection.endToStart,
+                        child: CartArticleCard(cartItem: cartItems[index]),
+                      ),
+                    );
+                  },
                 ),
+                SizedBox(height: 20),
+
+                // Animation de détails du panier
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -250,6 +226,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
                     ),
                   ),
                 ),
+
+                // Section avec animation
                 AnimatedBuilder(
                   animation: _heightAnimation,
                   builder: (context, child) {
@@ -258,74 +236,49 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       color: Colors.indigo.withOpacity(0.1),
                       child: _heightAnimation.value > 0
-                          ? SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Row(
+                          ? Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: addressController,
+                                        decoration: InputDecoration(labelText: 'Adresse de livraison'),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: IconButton(
+                                        icon: Icon(Icons.location_on, size: 40, color: Colors.red),
+                                        onPressed: _getCurrentLocation,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 55),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print("achat effectué");
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.indigoAccent,
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Expanded(
-                                        child: TextField(
-                                          controller: TextEditingController(text: userInfo['firstName']),
-                                          decoration: InputDecoration(labelText: 'Nom'),
-                                        ),
+                                      Text(
+                                        'Payer',
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: TextEditingController(text: userInfo['lastName']),
-                                          decoration: InputDecoration(labelText: 'Prénom'),
-                                        ),
-                                      ),
+                                      SizedBox(width: 12),
+                                      Icon(Icons.payment, color: Colors.white, size: 30),
                                     ],
                                   ),
-                                  SizedBox(height: 10),
-                                  TextField(
-                                    controller: TextEditingController(text: userInfo['email']),
-                                    decoration: InputDecoration(labelText: 'Email'),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          controller: addressController,
-                                          decoration: InputDecoration(labelText: 'Adresse de livraison'),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 8),
-                                        child: IconButton(
-                                          icon: Icon(Icons.location_on, size: 40, color: Colors.red),
-                                          onPressed: _getCurrentLocation,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 55),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      print("achat effectué");
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.indigoAccent,
-                                      foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Payer',
-                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(width: 12),
-                                        Icon(Icons.payment, color: Colors.white, size: 30),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             )
                           : SizedBox.shrink(),
                     );
