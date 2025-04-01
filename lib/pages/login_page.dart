@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // Vous pouvez ajouter la logique de connexion ici
       // URL de ton API de connexion
-    final Uri url = Uri.parse('http://localhost:8080/api/v1/login/login'); // Remplace avec l'URL de ton API
+    final Uri url = Uri.parse('http://127.0.0.1:8080/api/v1/login/login'); // Remplace avec l'URL de ton API
 
     // Création du body de la requête
     final Map<String, dynamic> body = {
