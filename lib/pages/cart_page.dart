@@ -49,7 +49,8 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     final cartService = CartService();
     final userService = UserService();
-    final userInfo = userService.getUserInformations(1);
+    
+    final Future<Map<String, String>> userInfo = userService.getUserInformations(1); // ID utilisateur fictif
 
     List<Map<String, dynamic>> cartItems = cartService.getAllArticlesInCart(1);
     double totalPrice = cartItems.fold(
@@ -88,17 +89,78 @@ class _CartPageState extends State<CartPage> with SingleTickerProviderStateMixin
                   ),
                 ],
               ),
-            )
-          : Column(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(
-                  '(← swipez à gauche pour supprimer)',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+            ),
+
+            // Informations utilisateur
+            Text(
+              'Mes informations',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+
+            // Champ Nom
+            FutureBuilder<Map<String, String>>(
+              future: userInfo,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Erreur: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return TextField(
+                    controller: TextEditingController(text: snapshot.data!['firstName']),
+                    decoration: InputDecoration(labelText: 'Nom'),
+                  );
+                } else {
+                  return Text('Aucune donnée disponible');
+                }
+              },
+            ),
+            SizedBox(height: 10),
+
+            // Champ Prénom
+            FutureBuilder<Map<String, String>>(
+              future: userInfo,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Erreur: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return TextField(
+                    controller: TextEditingController(text: snapshot.data!['lastName']),
+                    decoration: InputDecoration(labelText: 'Prénom'),
+                  );
+                } else {
+                  return Text('Aucune donnée disponible');
+                }
+              },
+            ),
+            SizedBox(height: 10),
+
+            // Champ Email
+            FutureBuilder<Map<String, String>>(
+              future: userInfo,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Erreur: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return TextField(
+                    controller: TextEditingController(text: snapshot.data!['email']),
+                    decoration: InputDecoration(labelText: 'Email'),
+                  );
+                } else {
+                  return Text('Aucune donnée disponible');
+                }
+              },
+            ),
+            SizedBox(height: 10),
+
+            // Champ Adresse de livraison
+            Row(
+              children: [
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),

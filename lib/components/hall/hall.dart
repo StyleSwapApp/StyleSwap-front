@@ -25,7 +25,7 @@ class _HallState extends State<Hall> {
   void initState() {
     super.initState();
     // Récupérer les articles depuis le service
-    products = articleService.getAllArticles();
+    // products = articleService.getAllArticles();
     totalPages = (products.length / itemsPerPage).ceil();
   }
 
