@@ -16,6 +16,7 @@ Bienvenue sur le front-end de **StyleSwap**, une application permettant d'achete
 ### 🏠 Page d'accueil et affichage des annonces avec pagination
 <p align="center">
   <img width="409" alt="image" src="https://github.com/user-attachments/assets/b5eff08d-a60a-4a75-b37b-6ba94000a645" />
+  <img width="415" alt="image" src="https://github.com/user-attachments/assets/4a3a0321-ac3f-48ed-915d-c3bb011a97fe" />
 </p>
 
 ### 📱 Responsive Design
