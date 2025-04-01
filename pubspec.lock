@@ -85,6 +85,7 @@ packages:
     source: hosted
     version: "2.1.4"
 <<<<<<< HEAD
+<<<<<<< HEAD
   file:
     dependency: transitive
     description:
@@ -102,6 +103,8 @@ packages:
     source: hosted
     version: "1.1.1"
 =======
+=======
+>>>>>>> e2eceb2 (pubsec)
   file_selector_linux:
     dependency: transitive
     description:
@@ -134,7 +137,10 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+4"
+<<<<<<< HEAD
 >>>>>>> a84df33 (front/create-article)
+=======
+>>>>>>> e2eceb2 (pubsec)
   flutter:
     dependency: "direct main"
     description: flutter
