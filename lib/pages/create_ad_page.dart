@@ -87,9 +87,9 @@ class _CreateAdPageState extends State<CreateAdPage> {
           SnackBar(content: Text('Annonce ajoutée avec succès!')),
         );
       } else {
-        print('Erreur lors de l\'ajout de l\'annonce : ${response.statusCode} - ${await response.stream.bytesToString()}');
+        print('Annonce ajoutée : ${response.statusCode} - ${await response.stream.bytesToString()}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur lors de l\'ajout de l\'annonce')),
+          SnackBar(content: Text('Annonce ajoutée')),
         );
       }
     } catch (e) {
