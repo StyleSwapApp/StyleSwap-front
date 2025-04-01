@@ -11,7 +11,7 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartService = CartService();
     final userService = UserService();
-    final userInfo = userService.getUserInformations(1); // ID utilisateur fictif
+    final Future<Map<String, String>> userInfo = userService.getUserInformations(1); // ID utilisateur fictif
 
     List<Map<String, dynamic>> cartItems = cartService.getAllArticlesInCart(1);
     double totalPrice = 0;
@@ -57,23 +57,62 @@ class CartPage extends StatelessWidget {
             SizedBox(height: 10),
 
             // Champ Nom
-            TextField(
-              controller: TextEditingController(text: userInfo['firstName']),
-              decoration: InputDecoration(labelText: 'Nom'),
+            FutureBuilder<Map<String, String>>(
+              future: userInfo,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Erreur: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return TextField(
+                    controller: TextEditingController(text: snapshot.data!['firstName']),
+                    decoration: InputDecoration(labelText: 'Nom'),
+                  );
+                } else {
+                  return Text('Aucune donnée disponible');
+                }
+              },
             ),
             SizedBox(height: 10),
 
             // Champ Prénom
-            TextField(
-              controller: TextEditingController(text: userInfo['lastName']),
-              decoration: InputDecoration(labelText: 'Prénom'),
+            FutureBuilder<Map<String, String>>(
+              future: userInfo,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Erreur: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return TextField(
+                    controller: TextEditingController(text: snapshot.data!['lastName']),
+                    decoration: InputDecoration(labelText: 'Prénom'),
+                  );
+                } else {
+                  return Text('Aucune donnée disponible');
+                }
+              },
             ),
             SizedBox(height: 10),
 
             // Champ Email
-            TextField(
-              controller: TextEditingController(text: userInfo['email']),
-              decoration: InputDecoration(labelText: 'Email'),
+            FutureBuilder<Map<String, String>>(
+              future: userInfo,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Erreur: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  return TextField(
+                    controller: TextEditingController(text: snapshot.data!['email']),
+                    decoration: InputDecoration(labelText: 'Email'),
+                  );
+                } else {
+                  return Text('Aucune donnée disponible');
+                }
+              },
             ),
             SizedBox(height: 10),
 

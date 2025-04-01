@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:styleswap/pages/main_page.dart';
 import 'package:styleswap/pages/sign_in_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:styleswap/services/Token.dart';
 
 
 
@@ -54,8 +55,8 @@ class _LoginPageState extends State<LoginPage> {
         final String token = data['token'];
         print('Connexion réussie, Token stocké');
 
-        // Exemple : Récupérer le token si l'API en renvoie un
-        await _storage.write(key: 'auth_token', value: token);
+        // Stocker le token dans le shared preferences
+        saveToken(token);
 
         // Rediriger vers la page d'accueil après la connexion réussie
       Navigator.pushAndRemoveUntil(
